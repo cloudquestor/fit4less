@@ -11,7 +11,7 @@ import UserList from './components/users/UserList';
 import UserForm from './components/users/UserForm';
 import WorkoutForm from './components/workouts/WorkoutForm';
 import WorkoutList from './components/workouts/WorkoutList';
-
+import WorkoutCalendar from './components/workouts/WorkoutCalendar';
 import MasterActivityList from './components/activities/MasterActivityList';
 import MasterActivityForm from './components/activities/MasterActivityForm';
 import { api } from './services/api';
@@ -82,6 +82,7 @@ function App() {
           <Tab label="Activity Types" />
           <Tab label="Workouts" />
           <Tab label="Record Workout" />
+          <Tab label="Calendar" />
         </Tabs>
       </Box>
 
@@ -129,6 +130,9 @@ function App() {
           }}
           onCancel={() => setSelectedWorkout(null)}
         />
+      </TabPanel>
+      <TabPanel value={tabValue} index={4}>
+        <WorkoutCalendar />
       </TabPanel>
     </Container>
   );
