@@ -7,7 +7,7 @@
 
 ## Setup
 1. Copy .env.example to .env
-2. Run `docker compose up -d`
+2. Run `docker compose --env-file .env up -d`
 
 ## Development
 - API runs on http://localhost:3000

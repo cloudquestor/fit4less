@@ -76,7 +76,6 @@ services:
     tty: true       # for react-scripts
     depends_on:
       - workout-api
-
    
 volumes:
   postgres_data:
