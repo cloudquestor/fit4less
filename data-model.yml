@@ -1,0 +1,86 @@
+activity_master_list:
+  name: static list of activities
+  description: static list of activities
+  fields:
+    - name: id
+      type: integer
+      description: unique id of the activity in database table
+    - name: name
+      type: string
+      description: Name of the activity
+    - name: description
+      type: string
+      description: Description of the activity
+    - name: type
+      type: string
+      description: Type of the activity
+    - name: category
+      type: string
+      description: Category of the activity
+
+  
+
+Activity:
+  name: Activity
+  description: Activity
+  fields:
+    - name: id
+      type: integer
+      description: unique id of the activity instance in database table
+    - type: integer
+      description: id of the activity in the activity_master_list
+      name: activity-id
+    - name: sets
+      type: integer
+      description: Number of sets in the activity
+    - name: reps
+      type: integer
+      description: Number of reps in the activity
+    - name: weight
+      type: integer
+      description: Weight of the activity
+    - name: duration
+      type: integer
+      description: Duration of the activity in seconds
+    - name: distance
+      type: integer
+      description: Distance of the activity in meters
+    - name: date-time
+      type: string
+      description: Date and time of the activity
+
+
+
+Workout:
+  name: Workout
+  description: Workout
+  fields:
+    - name: name
+      type: string
+      description: Name of the workout
+    - name: description
+      type: string
+      description: Description of the workout
+    - date: date
+      type: string
+      description: Date of the workout
+    - name: id
+      type: integer
+      description: unique id of the workout in database table
+    - name: activities
+      type: Activity[]
+      description: Activities in the workout
+
+User:
+  name: User
+  description: User
+  fields:
+    - name: name
+      type: string
+      description: Name of the user
+    - name: id
+      type: integer
+      description: unique id of the user in database table
+    - name: workouts
+      type: Workout[]
+      description: Workouts of the user

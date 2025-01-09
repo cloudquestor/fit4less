@@ -1,0 +1,87 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_workout_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./master-data.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - workout_network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin4_workout
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${POSTGRES_ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_USER}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - workout_network
+
+  workout-api:
+    build: 
+      context: ./workout-api
+      dockerfile: Dockerfile.dev
+    container_name: workout_api
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${API_PORT}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    volumes:
+        - ./workout-api:/app
+        - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - workout_network
+  workout-ui:
+    build:
+      context: ./workout-ui
+      dockerfile: Dockerfile.dev
+    environment:
+      - REACT_APP_API_URL= ${REACT_APP_API_URL}
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "${UI_PORT}:3000"
+    volumes:
+      - ./workout-ui:/app
+      - /app/node_modules
+    stdin_open: true # for react-scripts
+    tty: true       # for react-scripts
+    depends_on:
+      - workout-api
+
+   
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  workout_network:
+    driver: bridge

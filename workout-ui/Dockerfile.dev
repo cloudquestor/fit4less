@@ -1,0 +1,20 @@
+FROM node:latest
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+RUN npm i web-vitals --save-dev     
+RUN npm install -g nodemon  # Make sure nodemon is installed
+
+#not needed
+#COPY . .
+
+EXPOSE 3000
+
+# Use this to ensure proper hot reloading
+ENV WATCHPACK_POLLING=true
+ENV CHOKIDAR_USEPOLLING=true
+
+CMD ["npm", "start"]   
