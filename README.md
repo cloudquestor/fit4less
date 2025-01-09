@@ -4,7 +4,6 @@
 - `workout-api/` - Backend API
 - `workout-ui/` - Frontend React Application
 - `docker-compose.yml` - Main docker compose file
-- `compose.base.yml` - Base docker compose configuration
 
 ## Setup
 1. Copy .env.example to .env
@@ -12,6 +11,6 @@
 
 ## Development
 - API runs on http://localhost:3000
-- UI runs on http://localhost:3001
+- UI runs on http://localhost
 - PgAdmin runs on http://localhost:5050
 
