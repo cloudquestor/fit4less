@@ -14,6 +14,8 @@ import WorkoutList from './components/workouts/WorkoutList';
 import WorkoutCalendar from './components/workouts/WorkoutCalendar';
 import MasterActivityList from './components/activities/MasterActivityList';
 import MasterActivityForm from './components/activities/MasterActivityForm';
+import WorkoutAnalytics from './components/analytics/WorkoutAnalytics';
+
 import { api } from './services/api';
 
 function TabPanel({ children, value, index }) {
@@ -83,6 +85,8 @@ function App() {
           <Tab label="Workouts" />
           <Tab label="Record Workout" />
           <Tab label="Calendar" />
+          <Tab label="Analytics" />
+
         </Tabs>
       </Box>
 
@@ -133,6 +137,10 @@ function App() {
       </TabPanel>
       <TabPanel value={tabValue} index={4}>
         <WorkoutCalendar />
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={5}>
+        <WorkoutAnalytics />
       </TabPanel>
     </Container>
   );
