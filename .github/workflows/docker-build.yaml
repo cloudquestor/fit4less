@@ -1,16 +1,13 @@
 name: Docker Build and Push
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     types:
       - closed
 
 jobs:
   build-and-push:
-    if: github.event.pull_request.merged == true || github.event_name == 'push'
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     
     permissions:
