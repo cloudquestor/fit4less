@@ -36,6 +36,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./workout-api
+          file: ./workout-api/Dockerfile.dev
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/workout-api:latest
@@ -48,6 +49,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./workout-ui
+          file: ./workout-ui/Dockerfile.dev
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/workout-ui:latest
