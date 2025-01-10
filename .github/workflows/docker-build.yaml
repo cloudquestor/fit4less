@@ -57,19 +57,36 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Optional: Create a deployment status
-      - name: Create deployment status
+  create-deployment:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    permissions:
+      deployments: write
+    
+    steps:
+      - name: Create deployment
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { sha } = context;
-            const deployment = {
-              ref: sha,
-              environment: 'production',
-              description: 'Deployment from GitHub Actions',
-              auto_merge: false
-            };
-            await github.rest.repos.createDeployment({
-              ...context.repo,
-              ...deployment
-            });
+            try {
+              const deployment = await github.rest.repos.createDeployment({
+                ...context.repo,
+                ref: context.sha,
+                environment: 'production',
+                description: 'Deployment from GitHub Actions',
+                auto_merge: false,
+                required_contexts: []
+              });
+              
+              // Also create a deployment status
+              await github.rest.repos.createDeploymentStatus({
+                ...context.repo,
+                deployment_id: deployment.data.id,
+                state: 'success',
+                description: 'Deployment completed successfully'
+              });
+            } catch (error) {
+              console.error('Error:', error);
+              core.setFailed(error.message);
+            }
