@@ -25,7 +25,6 @@ export const api = {
 
 
   // New workout endpoints
-  // getActivities: () => axios.get(`${API_URL}/activity-master-list`),
   getWorkoutsByUser: (userId) => axios.get(`${API_URL}/workouts/user/${userId}`),
   getWorkouts: () => axios.get(`${API_URL}/workouts`),
   getWorkout: (id) => axios.get(`${API_URL}/workouts/${id}`),
