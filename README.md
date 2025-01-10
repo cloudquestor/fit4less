@@ -1,6 +1,6 @@
 # Workout Application
 
-[![Docker Build and Push](https://github.com/cloudquestor/fit4less/actions/workflows/docker-build.yaml/badge.svg?branch=main&event=deployment_status)](https://github.com/cloudquestor/fit4less/actions/workflows/docker-build.yaml)
+[![Docker Build and Push](https://github.com/cloudquestor/fit4less/actions/workflows/docker-build.yaml/badge.svg)](https://github.com/cloudquestor/fit4less/actions/workflows/docker-build.yaml)
 
 
 
