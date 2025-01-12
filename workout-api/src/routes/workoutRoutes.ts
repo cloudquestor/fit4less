@@ -27,6 +27,7 @@ interface WorkoutRequestBody {
     description?: string;
     date: string;
     user_id: number;
+    duration: number;
     activities?: WorkoutActivity[];
 }
 

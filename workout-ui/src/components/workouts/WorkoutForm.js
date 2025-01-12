@@ -14,16 +14,26 @@ import {
   FormControl,
   InputLabel,
   Select,
+  InputAdornment,
   CircularProgress
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { api } from '../../services/api';
 
 const WorkoutForm = ({ workout, onSubmit, onCancel }) => {
+  
+  const calculateTotalDuration = (activities) => {
+    return activities.reduce((total, activity) => {
+      return total + (parseInt(activity.duration) || 0);
+    }, 0);
+  };
+
   // Update initial state to use workout prop if available
   const [workoutData, setWorkoutData] = useState({
     name: '',
     description: '',
+    // duration: '', 
     date: new Date().toISOString().split('T')[0],
     user_id: '',
     activities: []
@@ -35,11 +45,13 @@ const WorkoutForm = ({ workout, onSubmit, onCancel }) => {
       setWorkoutData({
         ...workout,
         date: new Date(workout.date).toISOString().split('T')[0],
+        // duration: workout.duration || '' 
       });
     } else {
       setWorkoutData({
         name: '',
         description: '',
+        // duration: '', // Added duration field
         date: new Date().toISOString().split('T')[0],
         user_id: '',
         activities: []
@@ -111,11 +123,10 @@ const WorkoutForm = ({ workout, onSubmit, onCancel }) => {
 
   const handleActivityChange = (index, field, value) => {
     setWorkoutData(prev => {
-      const newActivities = [...prev.activities];
-      newActivities[index] = {
-        ...newActivities[index],
-        [field]: value
-      };
+      const newActivities = prev.activities.map((activity, i) => 
+        i === index ? { ...activity, [field]: value } : activity
+      );
+
       return {
         ...prev,
         activities: newActivities
@@ -126,11 +137,16 @@ const WorkoutForm = ({ workout, onSubmit, onCancel }) => {
   // Update handleSubmit to handle both create and update
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const totalDuration = calculateTotalDuration(workoutData.activities);
+    const submitData = {
+      ...workoutData,
+      duration: totalDuration // Include calculated duration
+    };
     try {
       if (workout) {
-        await api.updateWorkout(workout.id, workoutData);
+        await api.updateWorkout(workout.id, submitData);
       } else {
-        await api.createWorkout(workoutData);
+        await api.createWorkout(submitData);
       }
       onSubmit();
       setSuccess(true);
@@ -217,6 +233,32 @@ const WorkoutForm = ({ workout, onSubmit, onCancel }) => {
             />
           </Grid>
 
+          {/* Replace the editable duration field with readonly version */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Total Duration (minutes)"
+              type="number"
+              value={calculateTotalDuration(workoutData.activities)}
+              InputProps={{
+                readOnly: true,
+                disabled: true,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AccessTimeIcon />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ 
+                backgroundColor: 'action.hover',
+                '& .MuiInputBase-input.Mui-disabled': {
+                  WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)', // Maintains text color despite disabled state
+                  color: 'rgba(0, 0, 0, 0.87)'
+                }
+              }}
+            />
+          </Grid>
+
           {/* Description */}
           <Grid item xs={12}>
             <TextField
@@ -292,6 +334,41 @@ const WorkoutForm = ({ workout, onSubmit, onCancel }) => {
                     value={activity.weight}
                     onChange={(e) => handleActivityChange(index, 'weight', parseInt(e.target.value) || 0)}
                     InputProps={{ inputProps: { min: 0 } }}
+                  />
+                </Grid>
+
+                
+                {/* Add Duration Column */}
+                <Grid item xs={6} sm={2}>
+                  <TextField
+                    fullWidth
+                    label="Duration (min)"
+                    type="number"
+                    value={activity.duration}
+                    onChange={(e) => handleActivityChange(index, 'duration', parseInt(e.target.value) || 0)}
+                    InputProps={{ 
+                      inputProps: { 
+                        min: 0,
+                        step: 1
+                      }
+                    }}
+                  />
+                </Grid>
+                
+                {/* Add Distance Column */}
+                <Grid item xs={6} sm={2}>
+                  <TextField
+                    fullWidth
+                    label="Distance (km)"
+                    type="number"
+                    value={activity.distance}
+                    onChange={(e) => handleActivityChange(index, 'distance', parseFloat(e.target.value) || 0)}
+                    InputProps={{ 
+                      inputProps: { 
+                        min: 0,
+                        step: 0.01
+                      }
+                    }}
                   />
                 </Grid>
 
