@@ -19,6 +19,7 @@ export interface WorkoutRequestBody {
     description?: string;
     date: string;
     user_id: number;
+    duration: number;
     activities?: WorkoutActivity[];
 }
 
@@ -37,5 +38,6 @@ export interface Workout {
     description?: string;
     date: string;
     user_id: number;
+    duration: number;
     activities?: WorkoutActivity[];
 }

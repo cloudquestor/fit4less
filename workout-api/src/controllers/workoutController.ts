@@ -143,7 +143,7 @@ export const workoutController = {
 
     // Create new workout
     createWorkout: async (req: Request<{}, {}, WorkoutRequestBody>, res: Response) => {
-        const { name, description, date, user_id, activities } = req.body;
+        const { name, description, date, user_id, activities, duration } = req.body;
         
         const client = await pool.connect();
         try {
@@ -151,8 +151,8 @@ export const workoutController = {
 
             // Create workout
             const workoutResult = await client.query(
-                'INSERT INTO workout (name, description, date, user_id) VALUES ($1, $2, $3, $4) RETURNING *',
-                [name, description, date, user_id]
+                'INSERT INTO workout (name, description, date, user_id, duration) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+                [name, description, date, user_id, duration]
             );
 
             const workout_id = workoutResult.rows[0].id;
@@ -231,7 +231,9 @@ export const workoutController = {
     // Update workout
     updateWorkout: async (req: Request<ParamsDictionary, {}, WorkoutRequestBody>, res: Response) => {
         const { id } = req.params;
-        const { name, description, date, activities } = req.body;
+        const { name, description, date, duration, activities } = req.body;
+
+        console.log("req bodys is = "+ [name, description, date, duration, id])
         
         const client = await pool.connect();
         try {
@@ -239,8 +241,8 @@ export const workoutController = {
 
             // Update workout details
             const workoutResult = await client.query(
-                'UPDATE workout SET name = $1, description = $2, date = $3 WHERE id = $4 RETURNING *',
-                [name, description, date, id]
+                'UPDATE workout SET name = $1, description = $2, date = $3 , duration =$4 WHERE id = $5 RETURNING *',
+                [name, description, date, duration, id]
             );
 
             if (workoutResult.rows.length === 0) {
