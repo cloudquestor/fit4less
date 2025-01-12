@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: postgres_workout_db
+    container_name: workout_db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -59,7 +59,9 @@ services:
         condition: service_healthy
     networks:
       - workout_network
+
   workout-ui:
+    container_name: workout_ui
     build:
       context: ./workout-ui
       dockerfile: Dockerfile.dev

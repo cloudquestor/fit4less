@@ -12,8 +12,8 @@ CREATE TABLE activity (
     sets INTEGER,
     reps INTEGER,
     weight INTEGER,
-    duration INTEGER, -- in seconds
-    distance INTEGER, -- in meters
+    duration DOUBLE PRECISION, -- changed from INTEGER to DOUBLE PRECISION
+    distance DOUBLE PRECISION, -- changed from INTEGER to DOUBLE PRECISION
     date_time TIMESTAMP,
     FOREIGN KEY (activity_id) REFERENCES activity_master_list(id)
 );
@@ -24,6 +24,7 @@ CREATE TABLE workout (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     date DATE,
+    duration DOUBLE PRECISION, -- changed from INTEGER to DOUBLE PRECISION
     user_id INTEGER -- Adding this for the relationship with User table
 );
 
