@@ -359,7 +359,7 @@ const WorkoutForm = ({ workout, onSubmit, onCancel }) => {
                 <Grid item xs={6} sm={2}>
                   <TextField
                     fullWidth
-                    label="Distance (km)"
+                    label="Distance (Meter)"
                     type="number"
                     value={activity.distance}
                     onChange={(e) => handleActivityChange(index, 'distance', parseFloat(e.target.value) || 0)}
