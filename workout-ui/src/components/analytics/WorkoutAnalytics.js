@@ -40,6 +40,10 @@ const WorkoutAnalytics = () => {
   const [error, setError] = useState(null);
   const [timeRange, setTimeRange] = useState('month'); // week, month, year
 
+  const [pushupData, setPushupData] = useState([]);
+  const [monthlyPushupTotal, setMonthlyPushupTotal] = useState(0);
+
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -56,6 +60,8 @@ const WorkoutAnalytics = () => {
     const fetchWorkouts = async () => {
       if (!selectedUser) {
         setWorkouts([]);
+        setPushupData([]);
+        setMonthlyPushupTotal(0);
         return;
       }
 
@@ -64,6 +70,30 @@ const WorkoutAnalytics = () => {
         const response = await api.getWorkoutsByUser(selectedUser);
         setWorkouts(response.data);
         setError(null);
+
+        // Process pushup data
+        const pushupsByDay = {};
+        let totalPushups = 0;
+        
+        response.data.forEach(workout => {
+          workout.activities.forEach(activity => {
+            if (activity.name.toLowerCase().includes('push-up')) {
+              const date = dayjs(workout.date).format('YYYY-MM-DD');
+              pushupsByDay[date] = (pushupsByDay[date] || 0) + (activity.sets * activity.reps);
+              totalPushups += (activity.sets * activity.reps);
+            }
+          });
+        });
+
+        // Convert to array format for chart
+        const pushupArray = Object.entries(pushupsByDay).map(([date, count]) => ({
+          date,
+          count
+        }));
+
+        setPushupData(pushupArray);
+        setMonthlyPushupTotal(totalPushups);
+        setLoading(false);
       } catch (err) {
         setError('Failed to load workouts');
       } finally {
@@ -233,6 +263,45 @@ const WorkoutAnalytics = () => {
                   </CardContent>
                 </Card>
               </Grid>
+
+              {/* Monthly Pushup Total Widget */}
+      <Grid item xs={12} md={4}>
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Total Pushups This Month
+            </Typography>
+            <Typography variant="h3" component="div" color="primary">
+              {monthlyPushupTotal}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      {/* Daily Pushup Count Chart */}
+      <Grid item xs={12} md={6}>
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Daily Pushup Count
+            </Typography>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={pushupData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar
+                  dataKey="count"
+                  fill="#8884d8"
+                  name="Pushups"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </Grid>
 
               {/* Weight Progress Chart */}
               <Grid item xs={12}>
