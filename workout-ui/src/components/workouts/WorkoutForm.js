@@ -143,13 +143,16 @@ const WorkoutForm = ({ workout, onSubmit, onCancel }) => {
       duration: totalDuration // Include calculated duration
     };
     try {
+      let response;
       if (workout) {
-        await api.updateWorkout(workout.id, submitData);
+        response = await api.updateWorkout(workout.id, submitData);
       } else {
-        await api.createWorkout(submitData);
+        response = await api.createWorkout(submitData);
+        
       }
-      onSubmit();
+      onSubmit(response.data);
       setSuccess(true);
+    
     } catch (err) {
       console.error('Error saving workout:', err);
       setError('Failed to save workout');
@@ -394,7 +397,7 @@ const WorkoutForm = ({ workout, onSubmit, onCancel }) => {
         sx={{ mr: 1 }}
         disabled={!workoutData.user_id || workoutData.activities.length === 0}
       >
-        {workout ? 'Update Workout' : 'Save Workout'}
+        {workout? 'Update Workout' : 'Save Workout'}
       </Button>
       {workout && (
         <Button

@@ -128,8 +128,8 @@ function App() {
       <TabPanel value={tabValue} index={3}>
         <WorkoutForm 
           workout={selectedWorkout}
-          onSubmit={() => {
-            setSelectedWorkout(null);
+          onSubmit={(workout) => {
+            setSelectedWorkout(workout);
             setRefreshTrigger(prev => prev + 1);
           }}
           onCancel={() => setSelectedWorkout(null)}
