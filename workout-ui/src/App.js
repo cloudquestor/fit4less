@@ -55,6 +55,7 @@ function App() {
   };
 
   const handleTabChange = (event, newValue) => {
+    setSelectedWorkout(null);
     setTabValue(newValue);
   };
 
